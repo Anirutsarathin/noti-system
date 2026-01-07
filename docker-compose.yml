@@ -1,0 +1,38 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: smartdatastation_back
+    ports:
+      - "4500:4500"
+    environment:
+      DB_HOST: wisserv_mysql
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASS: R1_SCCC_th#
+      DB_NAME: smartdatastation
+      TZ: Asia/Bangkok          # กันเรื่อง timezone เผื่อ scheduler
+    networks:
+      - wisserv_v2_3_8_app-network
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: smartdatastation_font
+    ports:
+      - "5174:5173"
+    environment:
+      VITE_API_URL: http://backend:4500
+    depends_on:
+      - backend
+    networks:
+      - wisserv_v2_3_8_app-network
+    restart: always
+
+
+networks:
+  wisserv_v2_3_8_app-network:
+    external: true
